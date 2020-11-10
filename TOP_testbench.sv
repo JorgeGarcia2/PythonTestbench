@@ -36,27 +36,27 @@ initial
 		C_tb = 1'd;
 
 		#1
-		A_tb = 32'd1;
-		B_tb = 1'd;
-		C_tb = 1'd;
-
-		#1
-		A_tb = 32'd1;
-		B_tb = 1'd;
-		C_tb = 1'd;
-
-		#1
-		A_tb = 32'd1;
-		B_tb = 1'd;
-		C_tb = 1'd;
-
-		#1
-		A_tb = 32'd1;
-		B_tb = 1'd;
-		C_tb = 1'd;
-
-		#1
 		A_tb = 32'd0;
+		B_tb = 1'd;
+		C_tb = 1'd;
+
+		#1
+		A_tb = 32'd1;
+		B_tb = 1'd;
+		C_tb = 1'd;
+
+		#1
+		A_tb = 32'd1;
+		B_tb = 1'd;
+		C_tb = 1'd;
+
+		#1
+		A_tb = 32'd1;
+		B_tb = 1'd;
+		C_tb = 1'd;
+
+		#1
+		A_tb = 32'd1;
 		B_tb = 1'd;
 		C_tb = 1'd;
 
