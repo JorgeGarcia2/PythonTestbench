@@ -20,7 +20,7 @@ initial
 
 		#1
 		a_TB = 1'd0;
-		b_TB = 1'd1;
+		b_TB = 1'd0;
 		c_TB = 1'd0;
 
 		#1
@@ -30,7 +30,7 @@ initial
 
 		#1
 		a_TB = 1'd0;
-		b_TB = 1'd1;
+		b_TB = 1'd0;
 		c_TB = 1'd0;
 
 		#1

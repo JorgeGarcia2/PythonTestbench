@@ -70,8 +70,9 @@ class Port:
 class Input(Port):
     def __init__(self, port_def):
         Port.__init__(self, port_def)
-        self.value = port_def[3]   #Initial values
-        self.step = port_def[4]   #Initial values
+        self.value = port_def[3]                       #Initial values
+        if (port_def[4] != 0): self.step = port_def[4] #Initial values
+        else: self.step = 1
 
         if (self.value == 'R'):                          
             self.value = random.randint(0, 2**(self.rangePort)) #Asigna valor random al valor inicial
