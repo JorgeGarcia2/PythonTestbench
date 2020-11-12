@@ -41,7 +41,7 @@ class Testbench:
                         print(f"File {fileName} will be used!")
                         f = open(fileName,"r")
                         self.designCode = f.read()
-                        print("File read successfully")
+                        print(f"File {fileName} read successfully")
                         f.close()
                         break
                     else:
@@ -95,11 +95,9 @@ class Testbench:
                 res = input(f"\tStep: ")
                 if res != "": e[4] = int(res)
                 if (res.isdecimal()): e[4] = int(res)
-                
-        for i in data["input"]:
-            if (i[3] == 'c'): self.clock = Input(i)
-            elif (i[3] == 'r'): self.reset = Input(i)
-            else: self.inputs.append(Input(i))
+            if (e[3] == 'c'): self.clock = Input(e)
+            elif (e[3] == 'r'): self.reset = Input(e)
+            else: self.inputs.append(Input(e))
 
         for o in data["output"]:
             self.outputs.append(Port(o))
