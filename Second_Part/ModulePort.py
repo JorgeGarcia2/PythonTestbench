@@ -3,42 +3,8 @@
 import random
 import string
 
-class Module:
-    def __init__(self, module_def):
-        self.module_name = module_def["module"][0][0]
-        self.inputs = []
-        self.outputs = []
-        self.clock = None
-        self.reset = None
-
-        for i in module_def["input"]:
-            if (i[3] == 'c'):
-                self.clock = Input(i)
-            elif (i[3] == 'r'):
-                self.reset = Input(i)
-            else:
-                self.inputs.append(Input(i))
-
-        for o in module_def["output"]:
-            self.outputs.append(Port(o))
-
-    def nameTB(self):
-        return self.module_name + "_TB"
-        
-    def print(self):
-        print(f"Module Name: {self.module_name}\n")
-        print("\nInputs: \n") 
-        for element in self.inputs:
-            element.print()
-        print("\nOutputs: \n")
-        for element in self.outputs:
-            element.print()
-        self.clock.print()
-        self.reset.print()
-
 class Port:
     def __init__(self, port_def):
-        self.value=0
         self.namePort = port_def[0]     #Port Name
         self.rangePort = port_def[1] - port_def[2] #Bus size -1
         if (self.rangePort > 0):
@@ -47,11 +13,7 @@ class Port:
             self.rangePort *= -1        #To
             self.downtoPort = False
             
-        self.print()
-
-    #Metodo para concatenar NamePort + _TB
-    def namePortTB(self):
-        return self.namePort + "_TB"
+        self.print    
 
     #Metodo para obtener la representacion del rango
     def rangePortTB(self):
@@ -93,8 +55,7 @@ class Input(Port):
         if(self.value >= 2**(self.rangePort + 1)):
             self.value = 0
         
-        return f"{self.namePortTB()} = {self.rangePort + 1}'{valueStr}"
-        
+        return f"{self.namePort}_TB = {self.rangePort + 1}'{valueStr}"
 
                
                  

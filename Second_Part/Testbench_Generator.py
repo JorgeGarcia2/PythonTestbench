@@ -2,17 +2,18 @@
  # !/bin/python3.8 --> From Jorge
 import re
 import os
-from ModulePort import Module
+from ModulePort import Port
+from ModulePort import Input
 
 
 class Testbench:
     def __init__(self):
         self.designCode = None
-        self.data = {"module":[],
-                    "input": [],
-                    "output": []}
-        self.moduleTOP = None
-        
+        self.module_name = ""
+        self.inputs = []
+        self.outputs = []
+        self.clock = None
+        self.reset = None
         self.time = 10
         self.radix = "dec"
 
@@ -51,11 +52,13 @@ class Testbench:
         return noError
 
     def getData(self):
+        data = {"input": [],
+                "output": []}
         #Remove all the comments
         self.designCode = re.sub(r"(\/\/.*)", "", self.designCode) #erase comment line
         self.designCode = re.sub(r"(\/\*)(.|\n)*?(\*\/)", "", self.designCode) #erase block comment
   
-        pattern = r"\W*((module|input|output|inout)\s*(reg|\s*)\s*(\[\d+:\d+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
+        pattern = r"\W*((module|input|output|inout)\s*(reg|wire|\s*)\s*(\[\d+:\d+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
         
         match = re.search(pattern, self.designCode)
         self.designCode = re.sub(pattern, "", self.designCode, 1)
@@ -68,13 +71,13 @@ class Testbench:
                 ran=["","0","0",""]
                 
             for i in range(0,len(names)):
-                self.data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1]) 
+                if (match.group(2).replace(' ','') == "module"): self.moduleName = names[0]
+                else: data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1]) 
                    
             match = re.search(pattern, self.designCode)
             self.designCode = re.sub(pattern, "", self.designCode, 1)
 
-    def getInitVal(self):
-        for e in self.data["input"]:
+        for e in data["input"]:
             if (e[1]==e[2]):
                 if (re.search(r"\w*[cC][lL]\w*[kK]\w*",e[0])):
                     res = input(f"\nInput {e[0]} has been detected as a possible clock signal. Is this correct? (Y/N)\n")
@@ -85,14 +88,28 @@ class Testbench:
 
         print("\nEnter the initial value and the steps for the entries listed below separated by enter.\n"
               "(The default values ​​will be a random numbering and steps of 1).\n")
-        for e in self.data["input"]:
+        for e in data["input"]:
             if (e[3]!='c' and e[3]!='r'):
                 res = input(f"\n{e[0]} [{e[1]}:{e[2]}]\n\tInitial value: ")
-                if (res != ""): e[3] = int(res)
+                if (res.isdecimal()): e[3] = int(res)
                 res = input(f"\tStep: ")
                 if res != "": e[4] = int(res)
+                if (res.isdecimal()): e[4] = int(res)
+                
+        for i in data["input"]:
+            if (i[3] == 'c'): self.clock = Input(i)
+            elif (i[3] == 'r'): self.reset = Input(i)
+            else: self.inputs.append(Input(i))
+
+        for o in data["output"]:
+            self.outputs.append(Port(o))
+            
+        try:
+            self.time = int(input("How many time intervals do you want? "))
+        except:
+            print("Value not understood, using default: 10")
+        self.radix = input("Choose the test vectors radix ('bin', 'dec' or 'hex') ")
         
-        self.moduleTOP = Module(self.data)
         
 
     def write_head(self):
@@ -107,34 +124,30 @@ class Testbench:
             "//time scale\n"
             "`timescale 1ns/1ps\n\n"
             "//Main Testbench Starts here\n"
-            f"module {self.moduleTOP.module_name}_TB;\n\n"
+            f"module {self.module_name}_TB;\n\n"
             "//Signal instantiation\n")
-        """head =  ("//time scale\n"
-        "`timescale 1ns/1ps\n"
-        "//Main Testbench Starts here\n"
-        f"module {self.moduleTOP.module_name}_TB;\n")"""
 
-        if (self.moduleTOP.clock != None):
-            head += f"reg {self.moduleTOP.clock.namePortTB()};\n"
-        if (self.moduleTOP.reset != None):
-            head += f"reg {self.moduleTOP.reset.namePortTB()};\n"
-        for i in self.moduleTOP.inputs:
-            head += f"reg {i.rangePortTB()}{i.namePortTB()};\n"
-        for i in self.moduleTOP.outputs:
-            head += f"wire {i.rangePortTB()}{i.namePortTB()};\n"
+        if (self.clock != None):
+            head += f"reg {self.clock.namePort}_TB;\n"
+        if (self.reset != None):
+            head += f"reg {self.reset.namePort}_TB;\n"
+        for i in self.inputs:
+            head += f"reg {i.rangePortTB()}{i.namePort}_TB;\n"
+        for i in self.outputs:
+            head += f"wire {i.rangePortTB()}{i.namePort}_TB;\n"
         return head
 
     def write_instMod(self):
-        instMod = f"\n{self.moduleTOP.module_name} UUT("
-        if (self.moduleTOP.clock != None):
-            instMod += f".{self.moduleTOP.clock.namePort}({self.moduleTOP.clock.namePortTB()}), "
-        if (self.moduleTOP.reset != None):
-            instMod += f".{self.moduleTOP.reset.namePort}({self.moduleTOP.reset.namePortTB()}), "
-        for i in self.moduleTOP.inputs:
-            instMod += f".{i.namePort}({i.namePortTB()}), "
-        for i in self.moduleTOP.outputs:
-            instMod += f".{i.namePort}({i.namePortTB()})"
-            if(i != self.moduleTOP.outputs[-1]):
+        instMod = f"\n{self.module_name} UUT("
+        if (self.clock != None):
+            instMod += f".{self.clock.namePort}({self.clock.namePort}_TB), "
+        if (self.reset != None):
+            instMod += f".{self.reset.namePort}({self.reset.namePort}_TB), "
+        for i in self.inputs:
+            instMod += f".{i.namePort}({i.namePort}_TB), "
+        for i in self.outputs:
+            instMod += f".{i.namePort}({i.namePort}_TB)"
+            if(i != self.outputs[-1]):
                 instMod += ", "
             else: 
                 instMod += ");\n\n"
@@ -144,52 +157,44 @@ class Testbench:
     def write_body(self):
         body = ""
 
-        if (self.moduleTOP.clock != None): #sequential
-            body += f"\talways forever #1 {self.moduleTOP.clock.namePortTB()} = ~{self.moduleTOP.clock.namePortTB()};\n\n"
+        if (self.clock != None): #sequential
+            body += f"\talways forever #1 {self.clock.namePort}_TB = ~{self.clock.namePort}_TB;\n\n"
         
         body += ("initial\n"
         "\tbegin\n"
-        f'\t\t$dumpfile("{self.moduleTOP.module_name}.vcd");\n'
-        f"\t\t$dumpvars(1, {self.moduleTOP.nameTB()});\n\n")
+        f'\t\t$dumpfile("{self.module_name}.vcd");\n'
+        f"\t\t$dumpvars(1, {self.module_name}_TB);\n\n")
 
-        if (self.moduleTOP.clock != None):
-            body += f"\t\t{self.moduleTOP.clock.namePortTB()} = 0;\n"
+        if (self.clock != None):
+            body += f"\t\t{self.clock.namePort}_TB = 0;\n"
 
-        if (self.moduleTOP.reset != None):
-            body += f"\t\t{self.moduleTOP.reset.namePortTB()} = 1;\n"
+        if (self.reset != None):
+            body += f"\t\t{self.reset.namePort}_TB = 1;\n"
 
         #This initializes all the ports
         body += "\t\t//Initializing values\n"
-        for i in self.moduleTOP.inputs:
-            body += f"\t\t{i.namePortTB()} = {i.rangePort + 1}'b0;\n"
+        for i in self.inputs:
+            body += f"\t\t{i.namePort}_TB = {i.rangePort + 1}'b0;\n"
         
-        if (self.moduleTOP.reset != None):
+        if (self.reset != None):
             body += "\n\t\t#2\n"
-            body += f"\t\t{self.moduleTOP.reset.namePortTB()} = 0;\n"
+            body += f"\t\t{self.reset.namePort}_TB = 0;\n"
         
         body += f"\n\t\t//The program will iterate {self.time} times"
 
         for times in range(self.time):
             body += f"\n\t\t//Iteration: {times+1}\n\t\t#1\n"
-            for i in self.moduleTOP.inputs:
+            for i in self.inputs:
                 body += f"\t\t{i.printValue(self.radix)};\n"
         
         body += "\n\t\t$finish;\n\tend\nendmodule"
         
         return body
     
-    def getRadix_Time(self):
-        try:
-            self.time = int(input("How many time intervals do you want? "))
-        except:
-            print("Value not understood, using default: 10")
-            self.time=10
-        self.radix = input("Choose the test vectors radix ('bin', 'dec' or 'hex') ")
-    
     def createTB(self):
-        f = open(self.moduleTOP.module_name + "_testbench.sv", "w")
+        f = open(self.module_name + "_testbench.sv", "w")
         f.write(self.write_head())
         f.write(self.write_instMod())
         f.write(self.write_body())
         f.close()
-        print(f"\n{self.moduleTOP.module_name}_testbench.sv file has been created successfully")
+        print(f"\n{self.module_name}_testbench.sv file has been created successfully")

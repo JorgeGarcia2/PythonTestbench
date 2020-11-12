@@ -8,9 +8,7 @@ while(response != "N" and response != "n"):
     if(my_testench.getFile()):
         #print(my_testench.designCode)
         my_testench.getData()
-        my_testench.getInitVal()
         #print(f"\n\n{my_testench.data}")
-        my_testench.getRadix_Time()
         my_testench.createTB()
         break
     else:
