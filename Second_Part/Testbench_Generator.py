@@ -49,7 +49,7 @@ class Testbench:
                 ran=["","0","0",""]
                 
             for i in range(0,len(names)):
-                self.data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1])
+                self.data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1]) 
                    
             match = re.search(pattern, self.designCode)
             self.designCode = re.sub(pattern, "", self.designCode, 1)
@@ -59,10 +59,10 @@ class Testbench:
             if (e[1]==e[2]):
                 if (re.search("\w*[cC][lL]\w*[kK]\w*",e[0])):
                     res = input(f"\nInput {e[0]} has been detected as a possible clock signal. Is this correct? (Y/N)\n")
-                    if (res == "Y" or res == "y"): e[3] = 'c'
+                    if (res == "Y" or res == "y"): e[3] = 'c' 
                 elif (re.search("\w*[rR]\w*[sS]\w*[tT]\w*", e[0])):
                     res = input(f"\nInput {e[0]} has been detected as a possible reset signal. Is this correct? (Y/N)\n")
-                    if (res == "Y" or res == "y"): e[3] = 'r'
+                    if (res == "Y" or res == "y"): e[3] = 'r' 
 
         print("\nEnter the initial value and the steps for the entries listed below separated by enter.\n"
               "(The default values ​​will be a random numbering and steps of 1).\n")
