@@ -32,7 +32,6 @@ class Testbench:
             print(f"The {fileName} file was not found or you do not have read permissions")
             fileName=""
             for fil in os.listdir("."):
-                print(fil)
                 if ".sv" in fil and not "_testbench" in fil:
                     fileName=fil
                     print("sv file found, do you want to use: "+fil+"?(Y,N)\n")
