@@ -56,7 +56,7 @@ class Testbench:
         #Remove all the comments
         self.designCode = re.sub(r"(//.*)", "", self.designCode) #erase comment line
         self.designCode = re.sub(r"(/\*)(.|\n)*?(\*\/)", "", self.designCode) #erase block comment
-        self.params = re.search(r"#\([\w\s=,]*\)", self.designCode).group() #take #(Parameters)
+        
         for i in re.finditer(r"parameter\s*\w*\s*=\s*\d+\s*(,\s*\w*\s*=\s*\d*\s*)*", self.designCode): #modify Parameters
             for j in re.findall(r"\w*\s*=\s*\d+",i.group()):
                 k=re.split(r"=",j.replace(" ",""))
