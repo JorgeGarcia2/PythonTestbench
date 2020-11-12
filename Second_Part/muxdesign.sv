@@ -3,7 +3,10 @@
 // Luis Fernando Rodriguez Contreras
 // 18-10-2020
 
-// Include the Mux2:1, Not Gate and Or Gate modules
+// Include the Mux2:1, Not Gate and Or Gate module sda() input x;
+/*
+    output z;
+*/
 `include "mux2-1.sv"
 `include "not_gate.sv"
 `include "or_gate.sv"
