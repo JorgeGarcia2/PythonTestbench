@@ -15,7 +15,7 @@
 `timescale 1ns/1ps
 
 //Main Testbench Starts here
-module Logic_mux2_TB;
+module Logic_mux2_TB#(parameter hola=0, halo=4);
 
 //Signal instantiation
 reg a_TB;

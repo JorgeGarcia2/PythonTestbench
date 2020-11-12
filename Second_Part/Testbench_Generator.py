@@ -56,8 +56,7 @@ class Testbench:
         #Remove all the comments
         self.designCode = re.sub(r"(//.*)", "", self.designCode) #erase comment line
         self.designCode = re.sub(r"(/\*)(.|\n)*?(\*\/)", "", self.designCode) #erase block comment
-
-        ################Buscar parámetros y cambiarlos por su valor
+        self.params = re.search(r"#\([\w\s=,]*\)", self.designCode).group() #take #(Parameters)
   
         pattern = r"\W*((module|input|output|inout)\s*(reg|wire|\s*)\s*(\[\d+:\d+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
         
@@ -125,7 +124,7 @@ class Testbench:
             "//time scale\n"
             "`timescale 1ns/1ps\n\n"
             "//Main Testbench Starts here\n"
-            f"module {self.module_name}_TB;\n\n"
+            f"module {self.module_name}_TB{self.params};\n\n"
             "//Signal instantiation\n")
 
         if (self.clock != None):
