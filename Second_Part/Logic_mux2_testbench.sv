@@ -38,63 +38,63 @@ initial
 		//The program will iterate 10 times
 		//Iteration: 1
 		#1
-		a_TB = 1'd1;
+		a_TB = 1'd0;
 		b_TB = 1'd1;
-		c_TB = 1'd0;
+		c_TB = 1'd1;
 
 		//Iteration: 2
 		#1
-		a_TB = 1'd0;
+		a_TB = 1'd1;
 		b_TB = 1'd0;
-		c_TB = 1'd1;
+		c_TB = 1'd0;
 
 		//Iteration: 3
 		#1
-		a_TB = 1'd1;
+		a_TB = 1'd0;
 		b_TB = 1'd1;
-		c_TB = 1'd0;
+		c_TB = 1'd1;
 
 		//Iteration: 4
 		#1
-		a_TB = 1'd0;
+		a_TB = 1'd1;
 		b_TB = 1'd0;
-		c_TB = 1'd1;
+		c_TB = 1'd0;
 
 		//Iteration: 5
 		#1
-		a_TB = 1'd1;
+		a_TB = 1'd0;
 		b_TB = 1'd1;
-		c_TB = 1'd0;
+		c_TB = 1'd1;
 
 		//Iteration: 6
 		#1
-		a_TB = 1'd0;
+		a_TB = 1'd1;
 		b_TB = 1'd0;
-		c_TB = 1'd1;
+		c_TB = 1'd0;
 
 		//Iteration: 7
 		#1
-		a_TB = 1'd1;
+		a_TB = 1'd0;
 		b_TB = 1'd1;
-		c_TB = 1'd0;
+		c_TB = 1'd1;
 
 		//Iteration: 8
 		#1
-		a_TB = 1'd0;
+		a_TB = 1'd1;
 		b_TB = 1'd0;
-		c_TB = 1'd1;
+		c_TB = 1'd0;
 
 		//Iteration: 9
 		#1
-		a_TB = 1'd1;
+		a_TB = 1'd0;
 		b_TB = 1'd1;
-		c_TB = 1'd0;
+		c_TB = 1'd1;
 
 		//Iteration: 10
 		#1
-		a_TB = 1'd0;
+		a_TB = 1'd1;
 		b_TB = 1'd0;
-		c_TB = 1'd1;
+		c_TB = 1'd0;
 
 		$finish;
 	end

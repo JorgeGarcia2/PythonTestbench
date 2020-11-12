@@ -71,7 +71,8 @@ class Testbench:
                 ran=["","0","0",""]
                 
             for i in range(0,len(names)):
-                if (match.group(2).replace(' ','') == "module"): self.moduleName = names[0]
+                print(match.group(2).replace(' ','') == "module")
+                if (match.group(2).replace(' ','') == "module"): self.module_name = names[0]
                 else: data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1]) 
                    
             match = re.search(pattern, self.designCode)
