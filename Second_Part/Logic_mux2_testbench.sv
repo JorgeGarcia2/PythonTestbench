@@ -15,12 +15,12 @@
 `timescale 1ns/1ps
 
 //Main Testbench Starts here
-module Logic_mux2_TB#(parameter hola=0, halo=4);
+module Logic_mux2_TB;
 
 //Signal instantiation
-reg a_TB;
-reg b_TB;
-reg c_TB;
+reg [0:2]a_TB;
+reg [0:2]b_TB;
+reg [0:2]c_TB;
 wire y_TB;
 
 Logic_mux2 UUT(.a(a_TB), .b(b_TB), .c(c_TB), .y(y_TB));
@@ -31,70 +31,70 @@ initial
 		$dumpvars(1, Logic_mux2_TB);
 
 		//Initializing values
-		a_TB = 1'b0;
-		b_TB = 1'b0;
-		c_TB = 1'b0;
+		a_TB = 3'b0;
+		b_TB = 3'b0;
+		c_TB = 3'b0;
 
 		//The program will iterate 10 times
 		//Iteration: 1
 		#1
-		a_TB = 1'd1;
-		b_TB = 1'd0;
-		c_TB = 1'd0;
+		a_TB = 3'd1;
+		b_TB = 3'd0;
+		c_TB = 3'd2;
 
 		//Iteration: 2
 		#1
-		a_TB = 1'd0;
-		b_TB = 1'd1;
-		c_TB = 1'd1;
+		a_TB = 3'd2;
+		b_TB = 3'd1;
+		c_TB = 3'd3;
 
 		//Iteration: 3
 		#1
-		a_TB = 1'd1;
-		b_TB = 1'd0;
-		c_TB = 1'd0;
+		a_TB = 3'd3;
+		b_TB = 3'd2;
+		c_TB = 3'd4;
 
 		//Iteration: 4
 		#1
-		a_TB = 1'd0;
-		b_TB = 1'd1;
-		c_TB = 1'd1;
+		a_TB = 3'd4;
+		b_TB = 3'd3;
+		c_TB = 3'd5;
 
 		//Iteration: 5
 		#1
-		a_TB = 1'd1;
-		b_TB = 1'd0;
-		c_TB = 1'd0;
+		a_TB = 3'd5;
+		b_TB = 3'd4;
+		c_TB = 3'd6;
 
 		//Iteration: 6
 		#1
-		a_TB = 1'd0;
-		b_TB = 1'd1;
-		c_TB = 1'd1;
+		a_TB = 3'd6;
+		b_TB = 3'd5;
+		c_TB = 3'd7;
 
 		//Iteration: 7
 		#1
-		a_TB = 1'd1;
-		b_TB = 1'd0;
-		c_TB = 1'd0;
+		a_TB = 3'd7;
+		b_TB = 3'd6;
+		c_TB = 3'd0;
 
 		//Iteration: 8
 		#1
-		a_TB = 1'd0;
-		b_TB = 1'd1;
-		c_TB = 1'd1;
+		a_TB = 3'd0;
+		b_TB = 3'd7;
+		c_TB = 3'd1;
 
 		//Iteration: 9
 		#1
-		a_TB = 1'd1;
-		b_TB = 1'd0;
-		c_TB = 1'd0;
+		a_TB = 3'd1;
+		b_TB = 3'd0;
+		c_TB = 3'd2;
 
 		//Iteration: 10
 		#1
-		a_TB = 1'd0;
-		b_TB = 1'd1;
-		c_TB = 1'd1;
+		a_TB = 3'd2;
+		b_TB = 3'd1;
+		c_TB = 3'd3;
 
 		$finish;
 	end

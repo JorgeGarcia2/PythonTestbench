@@ -57,8 +57,12 @@ class Testbench:
         self.designCode = re.sub(r"(//.*)", "", self.designCode) #erase comment line
         self.designCode = re.sub(r"(/\*)(.|\n)*?(\*\/)", "", self.designCode) #erase block comment
         self.params = re.search(r"#\([\w\s=,]*\)", self.designCode).group() #take #(Parameters)
-  
-        pattern = r"\W*((module|input|output|inout)\s*(reg|wire|\s*)\s*(\[\d+:\d+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
+        for i in re.finditer(r"parameter\s*\w*\s*=\s*\d+\s*(,\s*\w*\s*=\s*\d*\s*)*", self.designCode): #modify Parameters
+            for j in re.findall(r"\w*\s*=\s*\d+",i.group()):
+                k=re.split(r"=",j.replace(" ",""))
+                self.designCode = self.designCode.replace(k[0],k[1])
+
+        pattern = r"\W*((module|input|output|inout)\s*(reg|wire|\s*)\s*(\[[\w\s\+\-\*]+:[\w\s\+\-\*]+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
         
         match = re.search(pattern, self.designCode)
         self.designCode = re.sub(pattern, "", self.designCode, 1)
@@ -74,7 +78,24 @@ class Testbench:
                 if (match.group(2).replace(' ','') == "module"): self.module_name = names[0]
                 else:
                     ################Actuar dependiendo de Operación o número
-                    data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1]) 
+                    for j in range(2):
+                        if "-" in str(ran[j+1]):
+                            arg1=ran[j+1].split("-")[0]
+                            arg2=ran[j+1].split("-")[1]
+                            ran[j+1]=int(arg1)-int(arg2)
+                            #ran[j+1]=int(ran[j+1].split("-")[0])-int(ran[j+1].split("-")[1])
+                        elif "+" in str(ran[j+1]):
+                            arg1=ran[j+1].split("+")[0]
+                            arg2=ran[j+1].split("+")[1]
+                            ran[j+1]=int(arg1)+int(arg2)
+                            #ran[j+1]=int(ran[j+1].split("+")[0])+int(ran[j+1].split("+")[1])
+                        elif "*" in str(ran[j+1]):
+                            arg1=ran[j+1].split("*")[0]
+                            arg2=ran[j+1].split("*")[1]
+                            ran[j+1]=int(arg1)*int(arg2)
+                            #ran[j+1]=int(ran[j+1].split("*")[0])*int(ran[j+1].split("*")[1])
+                        else: ran[j+1]=int(ran[j+1])
+                    data[match.group(2).replace(' ','')].append([names[i], ran[1], ran[2], 'R', 1]) 
                    
             match = re.search(pattern, self.designCode)
             self.designCode = re.sub(pattern, "", self.designCode, 1)
@@ -124,7 +145,7 @@ class Testbench:
             "//time scale\n"
             "`timescale 1ns/1ps\n\n"
             "//Main Testbench Starts here\n"
-            f"module {self.module_name}_TB{self.params};\n\n"
+            f"module {self.module_name}_TB;\n\n"
             "//Signal instantiation\n")
 
         if (self.clock != None):

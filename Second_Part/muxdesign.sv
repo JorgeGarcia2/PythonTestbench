@@ -11,8 +11,9 @@
 `include "not_gate.sv"
 `include "or_gate.sv"
 
-module Logic_mux2#(parameter hola=0, halo=4)(
-  input a, b, c,
+module Logic_mux2#(parameter sl   = 0 , dk   =   4);
+parameter qp   =   0,(
+  input [sl+1:dk-1] a, b, c,
   output reg y
   );
   
