@@ -4,7 +4,7 @@ from  Testbench_Generator import Testbench
 my_testench = Testbench()
 
 response = "Y"
-while(response == "Y"):
+while(response != "N" and response != "n"):
     if(my_testench.getFile()):
         #print(my_testench.designCode)
         my_testench.getData()

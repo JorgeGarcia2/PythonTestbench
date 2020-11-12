@@ -38,6 +38,7 @@ class Module:
 
 class Port:
     def __init__(self, port_def):
+        self.value=0
         self.namePort = port_def[0]     #Port Name
         self.rangePort = port_def[1] - port_def[2] #Bus size -1
         if (self.rangePort > 0):
@@ -46,7 +47,7 @@ class Port:
             self.rangePort *= -1        #To
             self.downtoPort = False
             
-        self.print    
+        self.print()
 
     #Metodo para concatenar NamePort + _TB
     def namePortTB(self):

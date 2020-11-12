@@ -1,6 +1,7 @@
 #!/bin/python3.6
  # !/bin/python3.8 --> From Jorge
 import re
+import os
 from ModulePort import Module
 
 
@@ -28,7 +29,25 @@ class Testbench:
             f.close()
         except:
             print(f"The {fileName} file was not found or you do not have read permissions")
-            noError = False
+            fileName=""
+            for fil in os.listdir("."):
+                print(fil)
+                if ".sv" in fil and not "_testbench" in fil:
+                    fileName=fil
+                    print("sv file found, do you want to use: "+fil+"?(Y,N)\n")
+                    t=input()
+                    if t!="n" and t!="N":
+                        print(f"File {fileName} will be used!")
+                        f = open(fileName,"r")
+                        self.designCode = f.read()
+                        print("File read successfully")
+                        f.close()
+                        break
+                    else:
+                        fileName=""
+                        print("File not used")
+            if fileName=="":
+                noError = False
         return noError
 
     def getData(self):
@@ -36,7 +55,7 @@ class Testbench:
         self.designCode = re.sub(r"(\/\/.*)", "", self.designCode) #erase comment line
         self.designCode = re.sub(r"(\/\*)(.|\n)*?(\*\/)", "", self.designCode) #erase block comment
   
-        pattern = "\W*((module|input|output|inout)\s*(reg|\s*)\s*(\[\d+:\d+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
+        pattern = r"\W*((module|input|output|inout)\s*(reg|\s*)\s*(\[\d+:\d+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
         
         match = re.search(pattern, self.designCode)
         self.designCode = re.sub(pattern, "", self.designCode, 1)
@@ -57,10 +76,10 @@ class Testbench:
     def getInitVal(self):
         for e in self.data["input"]:
             if (e[1]==e[2]):
-                if (re.search("\w*[cC][lL]\w*[kK]\w*",e[0])):
+                if (re.search(r"\w*[cC][lL]\w*[kK]\w*",e[0])):
                     res = input(f"\nInput {e[0]} has been detected as a possible clock signal. Is this correct? (Y/N)\n")
                     if (res == "Y" or res == "y"): e[3] = 'c' 
-                elif (re.search("\w*[rR]\w*[sS]\w*[tT]\w*", e[0])):
+                elif (re.search(r"\w*[rR]\w*[sS]\w*[tT]\w*", e[0])):
                     res = input(f"\nInput {e[0]} has been detected as a possible reset signal. Is this correct? (Y/N)\n")
                     if (res == "Y" or res == "y"): e[3] = 'r' 
 
@@ -77,10 +96,23 @@ class Testbench:
         
 
     def write_head(self):
-        head =  ("//time scale\n"
+        head =  ("/*\n*Testbench created automatically with a program written in Python 3.8 by:\n"
+            "*\tGarcía Vidal Jorge Alberto\n"
+            "*\tGuevara Zavala Arturo\n"
+            "*\tMorales Hurtado David Xchel\n"
+            "*\tRodriguez Contreras Luis Fernando\n"
+            "*\n*For the first project in the class of professor:\n"
+            "*\tCarolina Rosas Huerta\n*\n"
+            "*In the Silicon Verification Program\n*/\n\n"
+            "//time scale\n"
+            "`timescale 1ns/1ps\n\n"
+            "//Main Testbench Starts here\n"
+            f"module {self.moduleTOP.module_name}_TB;\n\n"
+            "//Signal instantiation\n")
+        """head =  ("//time scale\n"
         "`timescale 1ns/1ps\n"
         "//Main Testbench Starts here\n"
-        f"module {self.moduleTOP.module_name}_TB;\n")
+        f"module {self.moduleTOP.module_name}_TB;\n")"""
 
         if (self.moduleTOP.clock != None):
             head += f"reg {self.moduleTOP.clock.namePortTB()};\n"
@@ -127,6 +159,7 @@ class Testbench:
             body += f"\t\t{self.moduleTOP.reset.namePortTB()} = 1;\n"
 
         #This initializes all the ports
+        body += "\t\t//Initializing values\n"
         for i in self.moduleTOP.inputs:
             body += f"\t\t{i.namePortTB()} = {i.rangePort + 1}'b0;\n"
         
@@ -134,19 +167,23 @@ class Testbench:
             body += "\n\t\t#2\n"
             body += f"\t\t{self.moduleTOP.reset.namePortTB()} = 0;\n"
         
-        body += "\n\t\t#1\n"
+        body += f"\n\t\t//The program will iterate {self.time} times"
 
         for times in range(self.time):
+            body += f"\n\t\t//Iteration: {times+1}\n\t\t#1\n"
             for i in self.moduleTOP.inputs:
                 body += f"\t\t{i.printValue(self.radix)};\n"
-            body += "\n\t\t#1\n"
         
-        body += "\t\t$finish;\n\tend\nendmodule"
+        body += "\n\t\t$finish;\n\tend\nendmodule"
         
         return body
     
     def getRadix_Time(self):
-        self.time = int(input("How many time intervals do you want? "))
+        try:
+            self.time = int(input("How many time intervals do you want? "))
+        except:
+            print("Value not understood, using default: 10")
+            self.time=10
         self.radix = input("Choose the test vectors radix ('bin', 'dec' or 'hex') ")
     
     def createTB(self):
