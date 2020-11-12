@@ -1,5 +1,4 @@
-#!/bin/python3.6
- # !/bin/python3.8 --> From Jorge
+#!/bin/python3.8
 from  Testbench_Generator import Testbench
 
 my_testench = Testbench()

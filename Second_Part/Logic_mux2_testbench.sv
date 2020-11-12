@@ -19,17 +19,17 @@ initial
 		c_TB = 1'b0;
 
 		#1
-		a_TB = 1'd0;
+		a_TB = 1'd1;
 		b_TB = 1'd0;
 		c_TB = 1'd0;
 
 		#1
-		a_TB = 1'd1;
+		a_TB = 1'd0;
 		b_TB = 1'd1;
 		c_TB = 1'd1;
 
 		#1
-		a_TB = 1'd0;
+		a_TB = 1'd1;
 		b_TB = 1'd0;
 		c_TB = 1'd0;
 

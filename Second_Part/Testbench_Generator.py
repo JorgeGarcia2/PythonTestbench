@@ -49,7 +49,7 @@ class Testbench:
                 ran=["","0","0",""]
                 
             for i in range(0,len(names)):
-                self.data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 0, 0])
+                self.data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1])
                    
             match = re.search(pattern, self.designCode)
             self.designCode = re.sub(pattern, "", self.designCode, 1)
@@ -59,44 +59,22 @@ class Testbench:
             if (e[1]==e[2]):
                 if (re.search("\w*[cC][lL]\w*[kK]\w*",e[0])):
                     res = input(f"\nInput {e[0]} has been detected as a possible clock signal. Is this correct? (Y/N)\n")
-                    if (res == "Y"): e[3] = 'c'
+                    if (res == "Y" or res == "y"): e[3] = 'c'
                 elif (re.search("\w*[rR]\w*[sS]\w*[tT]\w*", e[0])):
                     res = input(f"\nInput {e[0]} has been detected as a possible reset signal. Is this correct? (Y/N)\n")
-                    if (res == "Y"): e[3] = 'r'
+                    if (res == "Y" or res == "y"): e[3] = 'r'
 
         print("\nEnter the initial value and the steps for the entries listed below separated by enter.\n"
               "(The default values ​​will be a random numbering and steps of 1).\n")
         for e in self.data["input"]:
-            if (e[3]!='c' or e[3]!='r'):
+            if (e[3]!='c' and e[3]!='r'):
                 res = input(f"\n{e[0]} [{e[1]}:{e[2]}]\n\tInitial value: ")
-                if res != "": e.append(int(res))
-                else: e.append("R")
+                if (res != ""): e[3] = int(res)
                 res = input(f"\tStep: ")
-                if res != "": e.append(int(res))
-                else: e.append(1)
-
-
-            """
-            if (e[1]==e[2] and re.search("\w*[cC][lL]\w*[kK]\w*", e[0])):
-                res = input(f"\nInput {e[0]} has been detected as a possible clock signal. Is this correct? (Y/N)\n")
-                if (res == "Y"):
-                    e += ["c",0]
-                    continue
-        
-            elif (e[1]==e[2] and re.search("\w*[rR]\w*[sS]\w*[tT]\w*", e[0])):
-                res = input(f"\nInput {e[0]} has been detected as a possible reset signal. Is this correct? (Y/N)\n")
-                if (res == "Y"):
-                    e += ["r",0]
-                    continue
-            else:
-                res = input(f"\n{e[0]} [{e[1]}:{e[2]}]\n\tInitial value: ")
-                if res != "": e.append(int(res))
-                else: e.append("R")
-                res = input(f"\tStep: ")
-                if res != "": e.append(int(res))
-                else: e.append(1)"""
+                if res != "": e[4] = int(res)
         
         self.moduleTOP = Module(self.data)
+        
 
     def write_head(self):
         head =  ("//time scale\n"
