@@ -56,6 +56,8 @@ class Testbench:
         #Remove all the comments
         self.designCode = re.sub(r"(//.*)", "", self.designCode) #erase comment line
         self.designCode = re.sub(r"(/\*)(.|\n)*?(\*\/)", "", self.designCode) #erase block comment
+
+        ################Buscar parámetros y cambiarlos por su valor
   
         pattern = r"\W*((module|input|output|inout)\s*(reg|wire|\s*)\s*(\[\d+:\d+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
         
@@ -71,7 +73,9 @@ class Testbench:
                 
             for i in range(0,len(names)):
                 if (match.group(2).replace(' ','') == "module"): self.module_name = names[0]
-                else: data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1]) 
+                else:
+                    ################Actuar dependiendo de Operación o número
+                    data[match.group(2).replace(' ','')].append([names[i], int(ran[1]), int(ran[2]), 'R', 1]) 
                    
             match = re.search(pattern, self.designCode)
             self.designCode = re.sub(pattern, "", self.designCode, 1)
