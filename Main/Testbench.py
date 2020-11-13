@@ -155,19 +155,19 @@ class Testbench:
         for i in self.outputs:
             textTB += f"wire {i.rangePortTB()}{i.namePort}_TB;\n"
             
-        instMod = f"\n{self.module_name} UUT("
+        textTB += f"\n{self.module_name} UUT("
         if (self.clock != None):
-            instMod += f".{self.clock.namePort}({self.clock.namePort}_TB), "
+            textTB += f".{self.clock.namePort}({self.clock.namePort}_TB), "
         if (self.reset != None):
-            instMod += f".{self.reset.namePort}({self.reset.namePort}_TB), "
+            textTB += f".{self.reset.namePort}({self.reset.namePort}_TB), "
         for i in self.inputs:
-            instMod += f".{i.namePort}({i.namePort}_TB), "
+            textTB += f".{i.namePort}({i.namePort}_TB), "
         for i in self.outputs:
-            instMod += f".{i.namePort}({i.namePort}_TB)"
+            textTB += f".{i.namePort}({i.namePort}_TB)"
             if(i != self.outputs[-1]):
-                instMod += ", "
+                textTB += ", "
             else: 
-                instMod += ");\n\n"
+                textTB += ");\n\n"
             
 
         if (self.clock != None): #sequential

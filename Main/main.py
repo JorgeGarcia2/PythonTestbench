@@ -1,4 +1,4 @@
-#!/bin/python3.8
+#!/bin/python3.6
 from Testbench import Testbench
 
 my_testench = Testbench()
