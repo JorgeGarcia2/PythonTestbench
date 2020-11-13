@@ -2,8 +2,8 @@
  # !/bin/python3.8 --> From Jorge
 import re
 import os
-from ModulePort import Port
-from ModulePort import Input
+from PortTB import Port
+from PortTB import Input
 
 
 class Testbench:
@@ -133,10 +133,9 @@ class Testbench:
         
         
 
-    def write_head(self):
-        head =  ("/*\n*Testbench created automatically with a program written in Python 3.8 by:\n"
+    def writeTB(self):
+        textTB =  ("/*\n*Testbench created automatically with a program written in Python 3.8 by:\n"
             "*\tGarcía Vidal Jorge Alberto\n"
-            "*\tGuevara Zavala Arturo\n"
             "*\tMorales Hurtado David Xchel\n"
             "*\tRodriguez Contreras Luis Fernando\n"
             "*\n*For the first project in the class of professor:\n"
@@ -149,16 +148,14 @@ class Testbench:
             "//Signal instantiation\n")
 
         if (self.clock != None):
-            head += f"reg {self.clock.namePort}_TB;\n"
+            textTB += f"reg {self.clock.namePort}_TB;\n"
         if (self.reset != None):
-            head += f"reg {self.reset.namePort}_TB;\n"
+            textTB += f"reg {self.reset.namePort}_TB;\n"
         for i in self.inputs:
-            head += f"reg {i.rangePortTB()}{i.namePort}_TB;\n"
+            textTB += f"reg {i.rangePortTB()}{i.namePort}_TB;\n"
         for i in self.outputs:
-            head += f"wire {i.rangePortTB()}{i.namePort}_TB;\n"
-        return head
-
-    def write_instMod(self):
+            textTB += f"wire {i.rangePortTB()}{i.namePort}_TB;\n"
+            
         instMod = f"\n{self.module_name} UUT("
         if (self.clock != None):
             instMod += f".{self.clock.namePort}({self.clock.namePort}_TB), "
@@ -173,49 +170,43 @@ class Testbench:
             else: 
                 instMod += ");\n\n"
             
-        return instMod
-
-    def write_body(self):
-        body = ""
 
         if (self.clock != None): #sequential
-            body += f"\talways forever #1 {self.clock.namePort}_TB = ~{self.clock.namePort}_TB;\n\n"
+            textTB += f"\talways forever #1 {self.clock.namePort}_TB = ~{self.clock.namePort}_TB;\n\n"
         
-        body += ("initial\n"
+        textTB += ("initial\n"
         "\tbegin\n"
         f'\t\t$dumpfile("{self.module_name}.vcd");\n'
         f"\t\t$dumpvars(1, {self.module_name}_TB);\n\n")
 
         if (self.clock != None):
-            body += f"\t\t{self.clock.namePort}_TB = 0;\n"
+            textTB += f"\t\t{self.clock.namePort}_TB = 0;\n"
 
         if (self.reset != None):
-            body += f"\t\t{self.reset.namePort}_TB = 1;\n"
+            textTB += f"\t\t{self.reset.namePort}_TB = 1;\n"
 
         #This initializes all the ports
-        body += "\t\t//Initializing values\n"
+        textTB += "\t\t//Initializing values\n"
         for i in self.inputs:
-            body += f"\t\t{i.namePort}_TB = {i.rangePort + 1}'b0;\n"
+            textTB += f"\t\t{i.namePort}_TB = {i.rangePort + 1}'b0;\n"
         
         if (self.reset != None):
-            body += "\n\t\t#2\n"
-            body += f"\t\t{self.reset.namePort}_TB = 0;\n"
+            textTB += "\n\t\t#2\n"
+            textTB += f"\t\t{self.reset.namePort}_TB = 0;\n"
         
-        body += f"\n\t\t//The program will iterate {self.time} times"
+        textTB += f"\n\t\t//The program will iterate {self.time} times"
 
         for times in range(self.time):
-            body += f"\n\t\t//Iteration: {times+1}\n\t\t#1\n"
+            textTB += f"\n\t\t//Iteration: {times+1}\n\t\t#1\n"
             for i in self.inputs:
-                body += f"\t\t{i.printValue(self.radix)};\n"
+                textTB += f"\t\t{i.printValue(self.radix)};\n"
         
-        body += "\n\t\t$finish;\n\tend\nendmodule"
+        textTB += "\n\t\t$finish;\n\tend\nendmodule"
         
-        return body
+        return textTB
     
     def createTB(self):
         f = open(self.module_name + "_testbench.sv", "w")
-        f.write(self.write_head())
-        f.write(self.write_instMod())
-        f.write(self.write_body())
+        f.write(self.writeTB())
         f.close()
         print(f"\n{self.module_name}_testbench.sv file has been created successfully")

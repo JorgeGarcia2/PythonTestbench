@@ -1,5 +1,5 @@
 #!/bin/python3.8
-from  Testbench_Generator import Testbench
+from Testbench import Testbench
 
 my_testench = Testbench()
 
