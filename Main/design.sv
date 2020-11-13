@@ -8,7 +8,20 @@
 `include "ALUcontrol.sv"
 `include "ALU.sv"
 
-module TOP(input wire clk,clock,input rst, rts,input[0:6]halo, hola, output[0:31]PC_Out ,   Imemo_Inst,RAM_Rw, RAM_R1 [0:5], output [0:31] RAM_R2,  output ALU_Flag[0:5][0:7]);
+module TOP(clk,rst,PC_Out,Imemo_Inst,RAM_Rw,RAM_R1,RAM_R2,ALU_Flag);
+  input wire clk;
+  input rst;
+  input [15:0] signal;
+  
+  output [0:31] PC_Out;
+  wire [0:31] PC_In;
+  
+  output [0:31] Imemo_Inst;
+  
+  output [0:31] RAM_Rw;
+  output [0:31] RAM_R1;
+  output [0:31] RAM_R2;
+  output ALU_Flag;
   
   reg [0:5] ControlOp;
   reg RAM_we;
