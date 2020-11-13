@@ -39,7 +39,7 @@ class Testbench:
                     if t!="n" and t!="N":
                         print(f"File {fileName} will be used!")
                         f = open(fileName,"r")
-                        self.designCode = f.read()
+                        self.designCode = " "+f.read()
                         print(f"File {fileName} read successfully")
                         f.close()
                         break
