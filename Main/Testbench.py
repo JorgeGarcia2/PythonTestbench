@@ -62,7 +62,7 @@ class Testbench:
                 k=re.split(r"=",j.replace(" ",""))
                 self.designCode = self.designCode.replace(k[0],k[1])
 
-        pattern = r"\W*((module|input|output|inout)\s*(reg|wire|\s*)\s*(\[[\w\s\+\-\*]+:[\w\s\+\-\*]+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
+        pattern = r"\W+((module|input|output|inout)\s*(reg|wire|\s*)\s*(\[[\w\s\+\-\*]+:[\w\s\+\-\*]+\]\s*|\s+)\s*(((,\s*|\s*)((?!input|output|inout)[_a-zA-Z]\w*))*))"
         
         match = re.search(pattern, self.designCode)
         self.designCode = re.sub(pattern, "", self.designCode, 1)
@@ -75,8 +75,7 @@ class Testbench:
                 ran=["","0","0",""]
                 
             for i in range(0,len(names)):
-                if (match.group(2).replace(' ','') == "module"):
-                    if (self.module_name==""): self.module_name = names[0]
+                if (match.group(2).replace(' ','') == "module"): self.module_name = names[0]
                 else:
                     ################Actuar dependiendo de Operación o número
                     for j in range(2):
