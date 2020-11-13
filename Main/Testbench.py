@@ -75,7 +75,8 @@ class Testbench:
                 ran=["","0","0",""]
                 
             for i in range(0,len(names)):
-                if (match.group(2).replace(' ','') == "module"): self.module_name = names[0]
+                if (match.group(2).replace(' ','') == "module"):
+                    if (self.module_name==""): self.module_name = names[0]
                 else:
                     ################Actuar dependiendo de Operación o número
                     for j in range(2):
@@ -124,7 +125,6 @@ class Testbench:
 
         for o in data["output"]:
             self.outputs.append(Port(o))
-            
         try:
             self.time = int(input("How many time intervals do you want? "))
         except:
