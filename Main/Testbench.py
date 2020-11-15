@@ -2,6 +2,7 @@
  # !/bin/python3.8 --> From Jorge
 import re
 import os
+import datetime
 from PortTB import Port
 from PortTB import Input
 
@@ -133,13 +134,20 @@ class Testbench:
         
 
     def writeTB(self):
-        textTB =  ("/*\n*Testbench created automatically with a program written in Python 3.8 by:\n"
-            "*\tGarcía Vidal Jorge Alberto\n"
-            "*\tMorales Hurtado David Xchel\n"
-            "*\tRodriguez Contreras Luis Fernando\n"
-            "*\n*For the first project in the class of professor:\n"
-            "*\tCarolina Rosas Huerta\n*\n"
-            "*In the Silicon Verification Program\n*/\n\n"
+        date = datetime.datetime.now()
+        textTB =  ("/*"+ 80*"*"+"\n"
+            "* Testbench created automatically with a program written in Python 3.8 by:\n"
+            "*\t - Garcia Vidal Jorge Alberto\n"
+            "*\t - Morales Hurtado David Xchel\n"
+            "*\t - Rodriguez Contreras Luis Fernando\n"
+            "* For the first project in the class of professor:\n"
+            "*\t - Carolina Rosas Huerta\n"
+            "* In the Silicon Verification Program\n*\n"
+            f"* \tDesign Name : {self.module_name}\n"
+            f"* \tFile Name : {self.module_name}_testbench.sv\n"
+            #f"- \tDate: {date.year}-{date.month}-{date.day}\n"
+            f"- \tDate: {date.strftime('%B %d, %Y')}\n"
+            "" + 80*"*"+"*/\n"
             "//time scale\n"
             "`timescale 1ns/1ps\n\n"
             "//Main Testbench Starts here\n"
