@@ -23,9 +23,9 @@ class Port{
     bool downTo;
 
     //constructor
-    Port(){
-        cout << "\nSe ah creado un objeto tipo Port Vacio";
-    }
+    Port(){;}
+        //cout << "\nSe ah creado un objeto tipo Port Vacio";
+        
 
     Port(string  name, infoPort defPort){
         namePort = name;
@@ -45,9 +45,7 @@ class Input : public Port{
     int value;
     int step;
     
-    Input(){
-        cout << "\nSe ah creado un objeto tipo Input Vacio";
-    }
+    Input(){;}
     Input(string  name, infoPort defPort):Port(name, defPort){
         value = defPort[2];
         step = defPort[3];
@@ -60,39 +58,46 @@ class Input : public Port{
         cout << "Value: " << value << "\nStep: " << step << endl;
     }
 
-    string printValue(char radix){
+    string printValue(string radix){
         string strnum = "";
-        char* buffer;
-        strnum += namePort + "_TB = " + to_string(rangePort + 1);
-        switch (radix)
-        {
-            case 'b':
-                itoa (value,buffer,2);
-                strnum += "'b";
-                if(downTo){
-                    for (int i = 0; i < strlen(buffer); i++) {
-                        strnum += buffer[i];
-                    }
-                }
-                else{
-                    for (int i = strlen(buffer) -1; i >= 0; i--) {
-                        strnum += buffer[i];
-                    }
-                }
-                break;
-            case 'h':
-                itoa (value,buffer,16);
-                strnum += "h";
-                for (int i = 0; i < strlen(buffer); i++) {
-                    strnum += buffer[i];
-                }
-                break;
-            default:
-                strnum += "'d" + to_string(value);
-                break;
+        int temp = value;
+        //char* buffer;
+        if (radix == "bin"){
+            while(temp>0){
+                strnum+=to_string(temp%2);
+                temp=temp/2;
+            }
+            if(downTo){
+                strnum+=(strnum=="")?"0b'":"b'";
+                reverse(strnum.begin(),strnum.end());
+            }
+            else{
+                while(strnum.length()<(rangePort+1))
+                    strnum.push_back('0');
+                strnum.insert(0, (strnum=="")?"'b0":"'b");
+            }
         }
+        else if (radix == "hex"){
+            while(temp>0){
+                (temp%16<10)?strnum+=to_string(temp%16) : strnum+=char(temp%16+87);
+                temp=temp/16;
+            }
+            strnum+=(strnum=="")?"0h'":"h'";
+            reverse(strnum.begin(),strnum.end());
+        }
+        else
+            strnum += "'d" + to_string(value);
         strnum += ";\n";
-        return strnum;
+        return namePort + "_TB = " + to_string(rangePort + 1) + strnum;
+    }
+
+    void nextValue(void){
+        if((value + step) < exp2 (rangePort + 1)){
+            value += step;
+        }
+        else{
+            value = 0 + ((value + step) - exp2 (rangePort + 1));
+        }
     }
 };
 
