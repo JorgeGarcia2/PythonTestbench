@@ -174,7 +174,7 @@ string tb_test_vectors(const string& module_name, Port_vector& p_vector)
         else if (p_vector[i].get_type() == "input" && p_vector[i].get_bus() == " " && p_vector[i].get_clock() == false && p_vector[i].get_reset() == false)
         {
             combinational_delay = pow(2, combinational_iterator);
-            combinational_string += "    #" + to_string(combinational_delay) + " " + p_vector[i].get_name()
+            combinational_string += "always #" + to_string(combinational_delay) + " " + p_vector[i].get_name()
                                   + "_tb = ~" + p_vector[i].get_name() + "_tb;\n";
             combinational_iterator++;
         } 
@@ -188,8 +188,8 @@ string tb_test_vectors(const string& module_name, Port_vector& p_vector)
 
     if (bit_initialization_string != "")        //If any 1-bit input variable was initialized
         test_v_string += "\ninitial\n  begin\n    //Initialization of 1-bit input variables\n"
-                       + bit_initialization_string + "  end\n\n//Combinational stimuli\nalways\n  begin\n"
-                       + combinational_string + "  end\n\n";
+                       + bit_initialization_string + "  end\n\n//Combinational stimuli\n"
+                       + combinational_string + "  \n\n";
 
     test_v_string += "\nendmodule";
 
