@@ -1,17 +1,31 @@
-#!/bin/python3.8
-from  Testbench_Generator import Testbench
+#!/bin/python3.6
+import os
+from Testbench import Testbench
+from time import sleep
+
+
+# The screen clear function
+def screen_clear():
+    sleep(2)
+    # for mac and linux(os.name is 'posix')
+    if os.name == 'posix':
+        _ = os.system('clear')
+    else:
+    # for windows platfrom
+        _ = os.system('cls')
+
 
 my_testench = Testbench()
-
 response = "Y"
-while(response == "Y"):
+while(response != "N" and response != "n"):
+    screen_clear()
     if(my_testench.getFile()):
-        #print(my_testench.designCode)
+        screen_clear()
         my_testench.getData()
-        my_testench.getInitVal()
-        #print(f"\n\n{my_testench.data}")
-        my_testench.getRadix_Time()
+        screen_clear()
         my_testench.createTB()
         break
     else:
         response = input("\nDo you want to try again? (Y/N)\n")
+        
+    

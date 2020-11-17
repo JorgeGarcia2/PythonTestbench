@@ -1,39 +1,7 @@
-#!/bin/python3.8
+#!/bin/python3.6
+ # !/bin/python3.8 --> From Jorge
 import random
 import string
-
-class Module:
-    def __init__(self, module_def):
-        self.module_name = module_def["module"][0][0]
-        self.inputs = []
-        self.outputs = []
-        self.clock = None
-        self.reset = None
-
-        for i in module_def["input"]:
-            if (i[3] == 'c'):
-                self.clock = Input(i)
-            elif (i[3] == 'r'):
-                self.reset = Input(i)
-            else:
-                self.inputs.append(Input(i))
-
-        for o in module_def["output"]:
-            self.outputs.append(Port(o))
-
-    def nameTB(self):
-        return self.module_name + "_TB"
-        
-    def print(self):
-        print(f"Module Name: {self.module_name}\n")
-        print("\nInputs: \n") 
-        for element in self.inputs:
-            element.print()
-        print("\nOutputs: \n")
-        for element in self.outputs:
-            element.print()
-        self.clock.print()
-        self.reset.print()
 
 class Port:
     def __init__(self, port_def):
@@ -46,10 +14,6 @@ class Port:
             self.downtoPort = False
             
         self.print    
-
-    #Metodo para concatenar NamePort + _TB
-    def namePortTB(self):
-        return self.namePort + "_TB"
 
     #Metodo para obtener la representacion del rango
     def rangePortTB(self):
@@ -69,8 +33,11 @@ class Port:
 class Input(Port):
     def __init__(self, port_def):
         Port.__init__(self, port_def)
-        self.value = port_def[3]   #Initial values
-        self.step = port_def[4]   #Initial values
+        if(type(port_def[3]) == int):
+            self.value = port_def[3]
+        else: self.value = 'R'
+        if (port_def[4] != 0): self.step = port_def[4] #Initial values
+        else: self.step = 1
 
         if (self.value == 'R'):                          
             self.value = random.randint(0, 2**(self.rangePort)) #Asigna valor random al valor inicial
@@ -86,12 +53,18 @@ class Input(Port):
         else:
             valueStr = f"d{int2base(self.value, 10)}"
         
-        self.value += self.step
-        if(self.value >= 2**(self.rangePort + 1)):
-            self.value = 0
+        return f"{self.namePort}_TB = {self.rangePort + 1}'{valueStr}"
+    
+    def nextValue(self):
+        if((self.value + self.step) < 2**(self.rangePort + 1)):
+            self.value += self.step
+        else:
+            temp = self.value + self.step
+            while(temp>=2**(self.rangePort + 1)): temp -= 2**(self.rangePort + 1)
+            self.value = temp
         
-        return f"{self.namePortTB()} = {self.rangePort + 1}'{valueStr}"
-        
+    
+    
 
                
                  
