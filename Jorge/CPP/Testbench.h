@@ -1,5 +1,18 @@
 #include "Port.h"
 
+bool splitText(string &text_to_split, string &text_result) {
+    bool result = false;
+    regex split("\\W*(\\w+)\\W*");
+    smatch m;
+    if(regex_search(text_to_split,m,split))
+    {   text_result = m[1];
+        text_to_split = m.suffix().str();
+        result = true;
+    }
+    
+    return result;
+}
+
 class Testbench {       // The class
     public:    
     string designCode;              //texto del design
@@ -13,29 +26,6 @@ class Testbench {       // The class
     string radix = "dec";
 
     Testbench(){;}
-
-    void read_file(void)
-    {
-        fstream  textFile;
-        string tempText;
-        string path = "design.sv";
-
-        textFile.exceptions (ifstream::failbit | ifstream::badbit );
-        try
-        {
-            textFile.open(path, ifstream::in);
-            while (!textFile.eof()){
-                getline(textFile, tempText);
-                designCode += tempText;
-                //cout << tempText << endl;
-            } 
-            textFile.close();  
-        }
-        catch (ifstream::failure e) 
-        {
-            cout << "An exception occurred, file was not found\n";
-        }
-    }
 
     void getData(void){
         vector<string> tmpVec;             //vector para separar los nombres de puertos "clk|rst|btn"
@@ -82,15 +72,6 @@ class Testbench {       // The class
             designCode = m.suffix().str();
         }
 
-        /*cout << "Module name: " << name_Module << endl;
-
-        for (auto const& pair: inputs_module) {
-            cout << "Inputs: " <<"name: "<< pair.first << "| range: " << pair.second[0] << "|" << pair.second[1] << endl;
-        }
-
-        for (auto const& pair: outputs_module) {
-            cout << "Outputs: " <<"name: "<< pair.first << "| range: " << pair.second[0] << "|" << pair.second[1] << endl;
-        }*/
         for (auto const& pair: inputs_module) {
             if(pair.second[0] == pair.second[1]){
                 if(regex_search (pair.first,m,re_Clk)){
@@ -205,7 +186,9 @@ class Testbench {       // The class
                 input_M[i].nextValue();
             }
         }
-        text_tb += "\tend\n"
+        text_tb +="\t\t#1\n" 
+                "\t\t$finish;\n"
+                "\tend\n"
                 "\n\tinitial begin\n"
                 "\t\t$dumpvars(1, "+name_Module+"_TB);\n"
                 "\t\t$dumpfile(\""+name_Module+".vcd\");\n"

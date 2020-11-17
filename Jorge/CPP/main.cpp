@@ -29,7 +29,7 @@ int main() {
             else{
                 cout << "Default file design.sv found, using it!\n";
                 break;
-        }
+            }
         }else{
             cout << "file found!";
             break;
@@ -41,7 +41,6 @@ int main() {
     } 
     textFile.close();  
 
-    my_TB.read_file();
     my_TB.getData();
     
     cout << "How many time intervals do you want? ";

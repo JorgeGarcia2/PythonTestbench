@@ -32,11 +32,7 @@ class Port{
         rangePort = defPort[0] - defPort[1];
         downTo = (rangePort >= 0);
         rangePort = int(abs(rangePort));
-        Port::PrintPort();
-    }
-
-    void PrintPort(void){
-        cout << "\nPort name: " << namePort << "\nBus size: " << rangePort << endl;
+        //Port::PrintPort();
     }
 };
 
@@ -51,11 +47,6 @@ class Input : public Port{
         step = defPort[3];
         if(value == -1)//Random
             value = experimental::randint(0,int(exp2 (rangePort)) - 1);
-        Input::PrintPort();
-    }
-    void PrintPort(void){
-
-        cout << "Value: " << value << "\nStep: " << step << endl;
     }
 
     string printValue(string radix){
@@ -96,22 +87,7 @@ class Input : public Port{
             value += step;
         }
         else{
-            value = 0 + ((value + step) - exp2 (rangePort + 1));
+            value = ((value + step) - exp2 (rangePort + 1));
         }
     }
 };
-
-
-bool splitText(string &text_to_split, string &text_result) {
-    bool result = false;
-    regex split("\\W*(\\w+)\\W*");
-    smatch m;
-    if(regex_search(text_to_split,m,split))
-    {   text_result = m[1];
-        //cout << "text: "<< text_result <<"|" <<m[1]<<endl;
-        text_to_split = m.suffix().str();
-        result = true;
-    }
-    
-    return result;
-}
