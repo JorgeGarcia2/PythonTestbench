@@ -28,23 +28,3 @@ The Module_TB class has a dependency relationship with the Translator class beca
 ![Diagrama UML](classesTB_UML.jpg "UML Clss Diagram")  
 *Figure 1 – UML Clss Diagram*
 - - -
-
-## Classes <a name="Classes"/></a>
-
-|Class    |   Description|
-|:------------|:-------------|
-|Testbench   |  |
-|Port   |  |
-|Input   |  |
-
-### Testbench Class <a name="Testbench"/></a>
-
-- - -
-
-### Port Class <a name="Port"/></a>
-
-- - -
-
-### Input Class <a name="Testbench"/></a>
-
->**Nota:** This is a note
